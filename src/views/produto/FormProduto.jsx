@@ -18,26 +18,38 @@ export default function FormProduto() {
     const [tempoMaximo, setTempoMaximo] = useState();
     const { state } = useLocation();
     const [idProduto, setIdProduto] = useState();
+    const [listaCategoria, setListaCategoria] = useState([]);
+    const [idCategoria, setIdCategoria] = useState();
 
     useEffect(() => {
-        //consulta os dados do cliente e seta cada informação
+
         if (state != null && state.id != null) {
             axios.get("http://localhost:8080/api/produto/" + state.id)
                 .then((response) => {
                     setIdProduto(response.data.id)
+                    setCodigoProduto(response.data.codigo)
                     setTitulo(response.data.titulo)
-                    setCodigoProduto(response.data.codigoProduto)
                     setDescricao(response.data.descricao)
                     setValorUnitario(response.data.valorUnitario)
-                    setTempoMinimo(response.data.tempoMinimo)
-                    setTempoMaximo(response.data.tempoMaximo)
+                    setTempoMinimo(response.data.tempoEntregaMinimo)
+                    setTempoMaximo(response.data.tempoEntregaMaximo)
+                    setIdCategoria(response.data.categoria.id)
                 })
         }
+
+        axios.get("http://localhost:8080/api/categoria")
+            .then((response) => {
+                const dropDownCategorias = response.data.map(c => ({ text: c.descricao, value: c.id }));
+                setListaCategoria(dropDownCategorias);
+            })
+
     }, [state])
+
     function salvar() {
         //associando os inputs do usuário aos atributos do cliente request
         let produtoRequest = {
             titulo: titulo,
+            idCategoria: idCategoria,
             codigoProduto: codigoProduto,
             descricao: descricao,
             valorUnitario: valorUnitario,
@@ -85,6 +97,9 @@ export default function FormProduto() {
                                     onChange={e => setTitulo(e.target.value)}
                                 />
 
+
+
+
                                 <Form.Input
                                     required
                                     fluid
@@ -94,6 +109,19 @@ export default function FormProduto() {
                                     onChange={e => setCodigoProduto(e.target.value)}
                                 />
                             </Form.Group>
+
+                            <Form.Select
+                                required
+                                fluid
+                                tabIndex='3'
+                                placeholder='Selecione'
+                                label='Categoria'
+                                options={listaCategoria}
+                                value={idCategoria}
+                                onChange={(e, { value }) => {
+                                    setIdCategoria(value)
+                                }}
+                            />
 
                             <Form.TextArea
                                 label="Descrição"

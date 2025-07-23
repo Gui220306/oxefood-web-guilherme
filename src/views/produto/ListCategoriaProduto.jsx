@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button, Container, Divider, Header, Icon, Modal, Table } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 
-export default function ListProduto() {
+export default function ListCategoria() {
 
     const [lista, setLista] = useState([]);
     const [openModal, setOpenModal] = useState(false);
@@ -20,36 +20,36 @@ export default function ListProduto() {
     //função utilizada para acessar a lista axios
     function carregarLista() {
 
-        axios.get("http://localhost:8080/api/produto")
+        axios.get("http://localhost:8080/api/categoria")
             .then((response) => {
                 setLista(response.data)
             })
     }
      async function remover() {
 
-       await axios.delete('http://localhost:8080/api/produto/' + idRemover)
+       await axios.delete('http://localhost:8080/api/categoria/' + idRemover)
        .then((response) => {
  
-           console.log('Produto removido com sucesso.')
+           console.log('Categoria removida com sucesso.')
  
-           axios.get("http://localhost:8080/api/produto")
+           axios.get("http://localhost:8080/api/categoria")
            .then((response) => {
                setLista(response.data)
            })
        })
        .catch((error) => {
-           console.log('Erro ao remover um produto.')
+           console.log('Erro ao remover categoria.')
        })
        setOpenModal(false)
    }
     return (
         <div>
-            <MenuSistema tela={'produto'} />
+            <MenuSistema tela={'categoria'} />
             <div style={{ marginTop: '3%' }}>
 
                 <Container textAlign='justified' >
 
-                    <h2> Produto </h2>
+                    <h2> Categoria</h2>
                     <Divider />
 
                     <div style={{ marginTop: '4%' }}>
@@ -60,7 +60,7 @@ export default function ListProduto() {
                             icon='clipboard outline'
                             floated='right'
                             as={Link}
-                            to='/form-produto'
+                            to='/form-categoria'
                         />
                         <br /><br /><br />
 
@@ -68,29 +68,18 @@ export default function ListProduto() {
 
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell>Titulo</Table.HeaderCell>
-                                    <Table.HeaderCell>Categoria</Table.HeaderCell>
-                                    <Table.HeaderCell>Codigo do Produto</Table.HeaderCell>
+                                    
                                     <Table.HeaderCell>Descrição</Table.HeaderCell>
-                                    <Table.HeaderCell>Valor Unitário</Table.HeaderCell>
-                                    <Table.HeaderCell>Tempo Mínimo</Table.HeaderCell>
-                                    <Table.HeaderCell>Tempo Máximo</Table.HeaderCell>
                                     <Table.HeaderCell textAlign='center'>Ações</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
                             <Table.Body>
 
-                                {lista.map(produto => (
+                                {lista.map(categoria => (
 
-                                    <Table.Row key={produto.id}>
-                                        <Table.Cell>{produto.titulo}</Table.Cell>
-                                        <Table.Cell>{produto.categoria.descricao}</Table.Cell>
-                                        <Table.Cell>{produto.codigoProduto}</Table.Cell>
-                                        <Table.Cell>{produto.descricao}</Table.Cell>
-                                        <Table.Cell>{produto.valorUnitario}</Table.Cell>
-                                        <Table.Cell>{produto.tempoMinimo}</Table.Cell>
-                                        <Table.Cell>{produto.tempoMaximo}</Table.Cell>
+                                    <Table.Row key={categoria.id}>
+                                        <Table.Cell>{categoria.descricao}</Table.Cell>
                                         <Table.Cell textAlign='center'>
 
                                             <Button
@@ -99,16 +88,16 @@ export default function ListProduto() {
                                                 color='green'
                                                 title='Clique aqui para editar os dados deste cliente'
                                                 icon>
-                                                <Link to="/form-produto" state={{ id: produto.id }} style={{ color: 'green' }}> <Icon name='edit' /> </Link>
+                                                <Link to="/form-categoria" state={{ id: categoria.id }} style={{ color: 'green' }}> <Icon name='edit' /> </Link>
                                             </Button> &nbsp;
 
                                             <Button
                                                 inverted
                                                 circular
                                                 color='red'
-                                                title='Clique aqui para remover este cliente'
+                                                title='Clique aqui para remover esta categoria'
                                                 icon
-                                                onClick={e => confirmaRemover(produto.id)}>
+                                                onClick={e => confirmaRemover(categoria.id)}>
                                                 <Icon name='trash' />
                                             </Button>
 
@@ -143,4 +132,3 @@ export default function ListProduto() {
         </div>
     )
 }
-
